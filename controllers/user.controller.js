@@ -1,46 +1,45 @@
-const users = require("../models/user.model");
-
-// Get all users.
-const getAllUsers = (req, res) => {
-    res.status(200).json({ users });
-};
-
+const users = require('../models/user.model');
 const { v4: uuidv4 } = require('uuid');
 
-// Create new user using post.
-const createUser = (req, res) => {
+// GET ALL USERS
+const getAllUsers = ((req, res) => {
+    res.status(200).json({ users })
+});
+
+// GET USER : ID
+const getUser = ((req, res) => {
+    const userId = req.params.id;
+    const findUser = users.filter((user) => user.id === userId);
+    res.status(200).json({ findUser })
+});
+
+// CREATE USER
+const createUser = ((req, res) => {
     const newUser = {
         id: uuidv4(),
-        name: req.body.name,
+        name: req.body.username,
         email: req.body.email
     };
-    users.push(newUser);
-    res.status(200).send(users);
-};
+    users.push(newUser)
+    res.status(201).json({ newUser })
+});
 
-// Get single user by id:
-const getSingleUser = (req, res) => {
+// UPDATE USER : ID
+const updateUser = ((req, res) => {
     const userId = req.params.id;
-    const user = users.filter((user) => user.id === userId)
-    res.status(200).send(user);
-};
-
-// Update user by id.
-const updateUser = (req, res) => {
-    const userId = req.params.id;
-    const { name, email } = req.body;
-    users.filter((user) => user.id == userId).map((selectUser) => {
-        selectUser.name = name;
-        selectUser.email = email;
+    const { username, email } = req.body;
+    users.filter((user) => user.id === userId).map((selectedUser) => {
+        selectedUser.name = username,
+            selectedUser.email = email
     });
-    res.status(200).send(users);
-};
+    res.status(200).json({ users })
+});
 
-// Delete user by id.
-const deleteUser = (req, res) => {
+// DELETE USER : ID
+const deleteUser = ((req, res) => {
     const userId = req.params.id;
-    const allNewUser = users.filter((user) => user.id !== userId)
-    res.status(200).send(allNewUser);
-};
+    const deleteUser = users.filter((user) => user.id !== userId)
+    res.status(200).json({ deleteUser })
+});
 
-module.exports = { getAllUsers, createUser, updateUser, getSingleUser, deleteUser };
+module.exports = { getAllUsers, getUser, createUser, updateUser, deleteUser };
